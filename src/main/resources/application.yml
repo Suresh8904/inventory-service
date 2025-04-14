@@ -1,0 +1,62 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: inventory_management_system
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://mysqldatabase-do-user-19841678-0.e.db.ondigitalocean.com:25060/inventory_management_system
+    hikari:
+      initialization-fail-timeout: 0
+  sql:
+    init:
+      platform: mysql
+      mode: always
+  jpa:
+    database-platform: "org.hibernate.dialect.MySQLDialect"
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            clientId: clientId
+            clientSecret: clientSecret
+            scope: openid
+            redirect-uri: http://localhost:8080/login/oauth2/code/cognito
+            clientName: clientName
+        provider:
+          cognito:
+            issuerUri: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_5MncTZem5
+            user-name-attribute: cognito:username
+
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_5MncTZem5
+
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
+
+springdoc:
+  api-docs:
+    path: /swagger-ui.html
+
+#Spring Security with Cognito
+uk:
+  lset:
+    service_url: http://localhost:8009
+    jwt:
+      aws:
+        userPoolId: us-east-1_5MncTZem5
+        region: us-east-1
